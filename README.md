@@ -1,7 +1,7 @@
 # Getting Started with Weather Forecast
 
 ## Before start
-Rename the `.env.local` file to `.env` and set the API key.
+Rename the `.env.example` file to `.env` and set the API key.
 
 ## Available Scripts
 
