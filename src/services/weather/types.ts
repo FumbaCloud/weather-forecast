@@ -39,8 +39,3 @@ export type Weather = {
     name: string;
     cod: number;
 };
-
-export type CoordType = {
-    lat: number;
-    lon: number;
-};

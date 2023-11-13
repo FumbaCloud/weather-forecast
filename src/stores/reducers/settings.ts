@@ -1,30 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Weather } from "../../services/weather/types";
-import { SelectedCity } from "../../helpers/types/selectedCity";
-
-type SettingsState = {
-    history: Weather[];
-    currentCity: SelectedCity;
+type InitialSettings = {
+    searchCity: string;
+    recentCity: string;
+    history: string[];
 };
 
-const initialSettings: SettingsState = {
-    history: [],
-    currentCity: {
-        lat: 50.45,
-        lon: 30.52,
-    },
+const initialSettings: InitialSettings = {
+    searchCity: "London",
+    recentCity: "London",
+    history: ["London", "Paris", "Berlin", "Barcelona", "Tokyo"],
 };
 
 export const settingsSlice = createSlice({
-    name: "appOptions",
+    name: "settings",
     initialState: initialSettings,
     reducers: {
-        addToHistory(state, action: PayloadAction<Weather[]>) {
-            state.history = action.payload;
+        setCurrentCity(state, action: PayloadAction<string>) {
+            state.searchCity = action.payload;
         },
-        setCurrentCity(state, action: PayloadAction<SelectedCity>) {
-            state.currentCity = action.payload;
+        setRecentCity(state, action: PayloadAction<string>) {
+            state.recentCity = action.payload;
+        },
+        addToHistory(state, action: PayloadAction<string>) {
+            state.history = [action.payload, ...state.history.filter((record) => record !== action.payload)];
+        },
+        removeFromHistory(state, action: PayloadAction<string>) {
+            state.history = state.history.filter((record) => record !== action.payload);
         },
     },
 });
