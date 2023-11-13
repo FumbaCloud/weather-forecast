@@ -6,6 +6,7 @@
   &__wrapper {
     display: grid;
     gap: 15px;
+    padding: 15px 0;
     align-items: center;
     justify-content: space-between;
     grid-template-columns: repeat(2, 1fr);
@@ -30,44 +31,23 @@
   &__search-input {
     width: 100%;
     color: white;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     padding: 10px 10px;
-    border: 1px solid #232d3f;
+    border: 1px solid var(--secondary-color);
     background-color: transparent;
     font-family: 'Rubik', sans-serif;
   }
 
-  &__search-list {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    z-index: 100;
-    padding: 10px;
-    border-radius: 5px;
-    top: calc(100% + 10px);
-    background-color: #0f0f0f;
-    border: 1px solid #232d3f;
+  &__search-btn {
+    color: white;
+    cursor: pointer;
+    padding: 10px 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--secondary-color);
+    background-color: transparent;
 
-    &:has(> .custom-scroll) {
-      .header__search-item {
-        margin-right: 10px;
-      }
-    }
-  }
-
-  &__search-scroll {
-    overflow: auto;
-    max-height: 135px;
-  }
-
-  &__search-item {
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 5px;
-
-    &:not(&--empty):hover {
-      cursor: pointer;
-      background-color: rgba(128, 128, 128, 0.5);
+    &:hover {
+      background-color: var(--secondary-color);
     }
   }
 }

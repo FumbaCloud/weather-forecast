@@ -1,63 +1,68 @@
 import { useEffect } from "react";
+import classNames from "classnames";
 
 import WeatherIcon from "./WeatherIcon";
-import WeatherItem from "./WeatherItem";
-import useHistory from "../../hooks/useHistory";
-import useWeather from "../../hooks/useWeather";
-import useCurrentCity from "../../hooks/useCurrentCity";
+import WeatherSection from "./WeatherSection";
+import useSettings from "../../hooks/useSettings";
 import toDateTimeFormat from "../../helpers/toDateTimeFormat";
 import toWindSpeedFormat from "../../helpers/toWindSpeedFormat";
 import toVisibilityFormat from "../../helpers/toVisibilityFormat";
 import toTemperatureFormat from "../../helpers/toTemperatureFormat";
 
-const Weather = () => {
-    const { currentCity } = useCurrentCity();
+import { weatherApi } from "../../services/weather";
+import WeatherSkeleton from "./WeatherSkeleton";
 
-    const { data } = useWeather(currentCity);
-    const { historyAdd } = useHistory();
+const Weather = () => {
+    const { searchCity, changeSearchCity, recentCity, changeRecentCity } = useSettings();
+    const { data, isLoading, isError } = weatherApi.useGetWeatherQuery(searchCity || recentCity);
 
     useEffect(() => {
-        if (data) {
-            historyAdd(data);
+        if (isError) {
+            changeSearchCity(recentCity);
+        } else {
+            changeRecentCity(searchCity);
         }
-    }, [data]);
+    }, [data, isError]);
 
     return (
-        <>
-            {data && (
-                <div className={"weather"}>
-                    <div className={"container"}>
-                        <div className={"weather__wrapper"}>
-                            <WeatherItem main>
-                                <h3>{data.name}</h3>
+        <div className={"weather"}>
+            <div className={"container"}>
+                <div className={classNames("weather__wrapper", {"weather__wrapper--loading": isLoading})}>
+                    {data ? (
+                        <>
+                            <WeatherSection main>
+                                <h3>{data.name}{`, ${data.sys.country}`}</h3>
                                 <small>{toDateTimeFormat(data.dt)}</small>
                                 <WeatherIcon icon={data.weather[0].icon} />
                                 <big>{toTemperatureFormat(data.main.temp)}</big>
-                                <span>{data.weather[0].main}</span>
                                 <small>({data.weather[0].description})</small>
-                            </WeatherItem>
-
-                            <WeatherItem title={"Feels like"}>
+                            </WeatherSection>
+                            <WeatherSection title={"Feels like"}>
                                 <span>{toTemperatureFormat(data.main.feels_like)}</span>
-                            </WeatherItem>
-
-                            <WeatherItem title={"Wind"}>
+                            </WeatherSection>
+                            <WeatherSection title={"Wind"}>
                                 <span>{toWindSpeedFormat(data.wind.speed)}</span>
-                            </WeatherItem>
-
-                            <WeatherItem title={"Temperatures for the day"}>
+                            </WeatherSection>
+                            <WeatherSection title={"Temperatures for the day"}>
                                 <span>Min: {toTemperatureFormat(data.main.temp_min)}</span>
                                 <span>Max: {toTemperatureFormat(data.main.temp_max)}</span>
-                            </WeatherItem>
-
-                            <WeatherItem title={"Visibility"}>
+                            </WeatherSection>
+                            <WeatherSection title={"Visibility"}>
                                 <span>{toVisibilityFormat(data.visibility)}</span>
-                            </WeatherItem>
-                        </div>
-                    </div>
+                            </WeatherSection>
+                        </>
+                    ) : (
+                        <>
+                            {isLoading ? (
+                                <WeatherSkeleton/>
+                            ) : (
+                                <div className={"weather__error"}>The requested weather could not be found. Please check your input and try again.</div>
+                            )}
+                        </>
+                    )}
                 </div>
-            )}
-        </>
+            </div>
+        </div>
     );
 };
 

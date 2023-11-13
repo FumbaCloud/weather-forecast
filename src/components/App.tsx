@@ -1,14 +1,17 @@
 import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import { PersistGate } from "redux-persist/integration/react";
 
 import AppView from "./AppView";
-import { store } from "../stores/store";
+import { persistor, store } from "../stores/store";
 
 const App = () => {
     return (
         <Provider store={store}>
-            <ToastContainer />
-            <AppView />
+            <PersistGate persistor={persistor}>
+                <ToastContainer />
+                <AppView />
+            </PersistGate>
         </Provider>
     );
 };
